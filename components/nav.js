@@ -1,56 +1,48 @@
-import React from 'react'
-import Link from 'next/link'
+import React, { Component } from "react";
+import Link from "next/link";
+import cookies from "next-cookies";
+import Router from "next/router";
 
-const links = [
-  { href: 'https://zeit.co/now', label: 'ZEIT' },
-  { href: 'https://github.com/zeit/next.js', label: 'GitHub' },
-].map(link => {
-  link.key = `nav-link-${link.href}-${link.label}`
-  return link
-})
+class Nav extends Component {
+  logout(e) {
+    e.preventDefault();
+    document.cookie = `account=deleted;expires=Thu, 01 Jan 1970 00:00:01 GMT `;
+    document.cookie = `token=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+    Router.push("/login");
+  }
+  render() {
+    return (
+      <nav>
+        <p>library light</p>
+        {!this.props.account ? (
+          <>
+            <Link href="/sign-up">
+              <a>Sign up</a>
+            </Link>
+            <Link href="/login">
+              <a>Login</a>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link href="/library">
+              <a>Library</a>
+            </Link>
+            <button onClick={this.logout}>Log out</button>
+          </>
+        )}
+        <style jsx>{`
+          nav {
+            border-bottom: solid black 1px;
+            display: flex;
+          }
+          a {
+            padding: 10px;
+          }
+        `}</style>
+      </nav>
+    );
+  }
+}
 
-const Nav = () => (
-  <nav>
-    <ul>
-      <li>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-      </li>
-      {links.map(({ key, href, label }) => (
-        <li key={key}>
-          <a href={href}>{label}</a>
-        </li>
-      ))}
-    </ul>
-
-    <style jsx>{`
-      :global(body) {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
-          Helvetica, sans-serif;
-      }
-      nav {
-        text-align: center;
-      }
-      ul {
-        display: flex;
-        justify-content: space-between;
-      }
-      nav > ul {
-        padding: 4px 16px;
-      }
-      li {
-        display: flex;
-        padding: 6px 8px;
-      }
-      a {
-        color: #067df7;
-        text-decoration: none;
-        font-size: 13px;
-      }
-    `}</style>
-  </nav>
-)
-
-export default Nav
+export default Nav;
